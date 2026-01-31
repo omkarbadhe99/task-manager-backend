@@ -16,17 +16,24 @@ import { TaskModule } from './task/task.module';
 import { MailModule } from './mail/mail.module';
 import { Photo } from './typeorm/entities/Photo.entity';
 import { Comments } from './typeorm/entities/Comments.entity';
+import { ConfigModule } from '@nestjs/config';
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type:'mysql',
-    host:'localhost',
-    port:3306,
-    username:'root',
-    password:'',
-    database:'type_orm',
-    entities:[User,Category,Task,Post,Photo,Comments],
-    synchronize:false,
-  }), UsersModule, AuthModule, CategoryModule, TaskModule, MailModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    
+   TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [User, Category, Task, Post, Photo, Comments],
+      synchronize: false,
+    }), UsersModule, AuthModule, CategoryModule, TaskModule, MailModule],
+
   controllers: [AppController],
   providers: [AppService],
 })
